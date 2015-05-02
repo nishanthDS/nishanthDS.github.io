@@ -1,0 +1,88 @@
+body{
+    font-family: 'PT Sans', sans-serif;
+}
+.axis text {
+    font: 10px sans-serif;
+}
+
+.axis line,
+.axis path {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
+}
+
+
+.boundingBox{
+    cursor: pointer;
+    fill: grey;
+    fill-opacity: .3;
+    pointer-events: all;
+}
+
+.brush{
+    fill: darkgrey;
+    fill-opacity: .5;
+    pointer-events: none;
+}
+
+.extent {
+  fill: #000;
+  fill-opacity: .125;
+  stroke: #fff;
+}
+
+
+#dimScreen
+{
+    
+    padding:0;
+    margin:0;
+
+    width: 100%;
+    background:rgba(255,255,255,0.5);
+}
+
+.slider1, .slider2
+{
+    display: inline-block; vertical-align: middle; 
+}
+
+.outer {
+    width: 400px;
+    height: 650px;
+    overflow: auto;
+}
+.inner {
+    width: 400px;
+    height:800px;
+}
+
+table, th, td {
+    border: 1px solid black;
+}
+
+.geo {
+    stroke:white;
+    stroke-width:1;
+}
+
+.geo-unselect {
+    opacity: .1;
+}
+
+.subunit-label {
+  fill: black;
+  
+  font-size: 6px;
+  font-weight: 300;
+  text-anchor: middle;
+}
+
+.scatter-text {
+  fill: black;
+  
+  font-size: 7px;
+  font-weight: 300;
+  
+}

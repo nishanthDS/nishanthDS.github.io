@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+	<meta charset="UTF-8">
+	<title>Global Health Infrastructure</title>
+
+	<!-- ADD Libraries-->
+	<script src="libs/d3/d3.min.js" charset="utf-8"></script>
+	<script src="libs/jquery/jquery-2.1.1.min.js" charset="utf-8"></script>
+	<script src="libs/bootstrap/js/bootstrap.min.js" charset="utf-8"></script>
+	<script src="http://d3js.org/queue.v1.min.js"></script>
+
+
+	<!--Stylesheets-->
+	<link rel="stylesheet" type="text/css" href="libs/bootstrap/css/bootstrap.min.css">
+
+	<!-- Get some nice font-->
+	<link href='http://fonts.googleapis.com/css?family=PT+Sans:400,700' rel='stylesheet' type='text/css'>
+
+	<!-- add own vis classes -->
+	<script src = "js/scatter.js"></script>
+	<script src = "js/choropleth.js"></script>
+	<script src = "js/histogram.js"></script>
+	<script src = "js/hosptab.js"></script>
+
+	 <!-- add own stylesheet-->
+    <link rel="stylesheet" type="text/css" href="css/myStyle.css">
+
+	<body>
+		<div class="container" id="dimScreen">
+			<h1>Global Health Infrastructure</h1>
+
+		<div class="row">
+			<div class="col-md-8 col-sm-12">
+				<b>Visualising Global health infrastructure and Life Expectancy</b>
+			</div>
+		</div>
+		
+	<div class="row">
+	<div class="col-md-9">
+		<div class="row">
+			<div class="col-md-12" id="choropleth">
+				<svg width="878" height="450">
+				</svg>
+			</div>
+			
+		</div>
+
+		<div class="row">
+			<div class="col-md-3"></div>
+			<div class="col-md-6">
+			
+      		<b>Time Slider</b>
+      		<input type="range" name="points" min="1995" max="2010" step="1" value="0" id="slider-time">
+    		
+    		</div>
+    		<div class="col-md-3"></div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-6" id="scatter">
+				<svg width="500" height="250">
+			</div>
+			
+				<div class="col-md-6" id="histogram">
+					<svg width="550" height="250">
+				</div>
+			
+		</div>
+	</div>
+
+	<div class="col-md-3">
+
+		<div class="row">
+			<div class="col-md-9">
+				<b class="slider1">Top</b>
+				<input type="range" name="points" min="1" max="12000" step="100" value="0" id="slider-rank" class="slider2">
+				 </br>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="outer">	
+				<div class = "inner">
+					<div  id="HospTab"></div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>
+</div>
+
+	<script>
+		$(function(){
+			// this function is called after the HTML document is fully loaded
+			var allData = [];
+			var GeoData;
+			var par_year;
+			var nested_Hrank;
+			var filtered_rank;
+			//date format for year
+			var yearFormat = d3.time.format("%Y");
+			
+			//event listener for slider change
+			var rangeInput = document.getElementById("slider-time");
+			
+			var rankInput = document.getElementById("slider-rank");
+
+			//call this function after Data is loaded, reformatted and bound to the variables
+
+			var initVis = function(){
+
+				//Create a eventHandler
+				var MyEventHandler = new Object();
+				
+				//console.log(GeoData);
+
+				//Instantiate all Vis Objects here
+			var  scatter = new Scatter(d3.select('#scatter'), GeoData, MyEventHandler);
+
+			var  choropleth = new Choropleth(d3.select('#choropleth'), GeoData, MyEventHandler);
+
+			var histogram = new Histogram(d3.select('#histogram'), GeoData, MyEventHandler);
+
+			//console.log(nested_Hrank);
+			var hosptab = new HospTab(d3.select('#HospTab'),GeoData, nested_Hrank, "cRank",MyEventHandler);
+			
+			rangeInput.addEventListener("change", function() {
+			//document.getElementById("slider-time").textContent = rangeInput.value;
+			
+			Merge_Geo(rangeInput.value);
+			choropleth.onSelectionChange(GeoData);
+			scatter.onSelectionChange(GeoData);
+			histogram.onSelectionChange(GeoData);
+			}, false);
+
+			rankInput.addEventListener("change", function(){
+				
+				RankSet(rankInput.value);
+				hosptab.onSelectionChange(nested_Hrank, "cRank");
+
+			}, false);
+
+			$(MyEventHandler).bind("selectionChangedScatter", function(event, e){
+				histogram.onSelectionChangeScatter(e);
+				choropleth.onSelectionChangeScatter(e);
+				hosptab.onSelectionChangeScatter(e);
+				//console.log(e);
+			});
+
+			$(MyEventHandler).bind("selectionChangedHistogram", function(event, e){
+				scatter.onSelectionChangeHistogram(e);
+				choropleth.onSelectionChangeHistogram(e);
+				hosptab.onSelectionChangeHistogram(e);
+				//console.log(e);
+			});
+
+			$(MyEventHandler).bind("geoCountrySelect", function(event, cname){
+					
+					RankSet(rankInput.value);
+					CountryHosp(cname);
+
+					hosptab.onSelectionChange(C_hosp_rank, "cHosp");
+			});
+
+			$(MyEventHandler).bind("countryRank", function(event, s){
+					
+
+					RankSet(rankInput.value);
+					hosptab.onSelectionChange(nested_Hrank, "cRank");
+			});
+
+			}
+
+			// call this function after both files are loaded -- error should be "null" if no error
+			var dataLoaded = function(error, _Data_le, _Data_pcap, _Data_p1000, _Data_gdp, _GeoData, _HRank){
+
+				if(!error) {
+
+					
+
+				GeoData = _GeoData;
+
+			//mapping all data to _Data
+			Data_le = _Data_le;
+
+			Data_pcap = _Data_pcap;
+
+			Data_p1000 = _Data_p1000;
+
+			Data_gdp = _Data_gdp;
+			
+			HRank = _HRank;
+
+			//cosnole.log(HRank);
+		
+		RankSet(15000);
+		Merge_Geo(1995);
+			
+		nested_Hrank.forEach(function(d){
+			matched_hosp = GeoData.features.filter(function(b){ return d.key.trim() == b.properties.name.trim();})
+
+			if (matched_hosp.length == 0)
+				{
+				//console.log(d.key.trim());
+				}
+		})
+
+		//CountryHosp("India");
+			
+
+			//console.log(Hrank_sort)
+
+			
+			//console.log(nested_Hrank);
+
+				}
+
+				initVis();
+			}
+
+			var RankSet = function(rank){
+
+			filtered_rank = HRank.filter(function(d) {return parseInt(d.Rank) < rank; });
+			
+			nested_Hrank = d3.nest()
+								 .key(function(d) {return d.Country.trim(); })
+								 .rollup(function(leaves) { return leaves.length; })
+								 .entries(filtered_rank);
+
+			nested_Hrank = nested_Hrank.sort(function(a,b){return parseInt(b.values) - parseInt(a.values); })
+			}
+
+			var CountryHosp = function(country){
+				country_hosp = filtered_rank.filter(function(d){return d.Country.trim() == country.trim();})
+
+				C_hosp_rank = country_hosp.map(function(d){
+					return {
+						"rank": d.Rank,
+						"hospital": d.Hospital
+					};
+				})
+
+				
+				C_hosp_rank = C_hosp_rank.sort(function(a,b){return parseInt(a.rank) - parseInt(b.rank); })
+
+			}
+
+			var Merge_Geo = function(year){
+			
+				//Merge Geojson and parameter values
+				GeoData.features.forEach(function(d){
+					
+				var matched_le = Data_le.filter(function(a){return a["Country Name"] == d.properties.name});
+
+				var matched_pcap = Data_pcap.filter(function(a){return a["Country Name"] == d.properties.name});
+
+				var matched_p1000 = Data_p1000.filter(function(a){return a["Country Name"] == d.properties.name});
+
+				var matched_gdp = Data_gdp.filter(function(a){return a["Country Name"] == d.properties.name});
+
+				if (matched_le.length == 0 || matched_p1000.length == 0 || matched_pcap.length == 0){
+					d.properties.LE = 0;
+					d.properties.pcap = 0;
+					d.properties.p1000 = 0;
+					d.properties.gdp = 0;
+
+				}
+				else{
+					matched_le[0][year] = matched_le[0][year];
+				d.properties.LE = matched_le[0][year];
+				d.properties.pcap = matched_pcap[0][year];
+				d.properties.p1000 = matched_p1000[0][year];
+				d.properties.gdp = matched_gdp[0][year];
+				d.properties.year = year;
+			}
+
+
+
+			})
+			
+			}
+
+			//load the data from csv
+
+			var start_loading = function(){
+				queue()
+				.defer(d3.csv, "data/life_expectancy.csv")
+				.defer(d3.csv, "data/Percap_health_spending.csv")
+				.defer(d3.csv, "data/Physicians_per_1000.csv")
+				.defer(d3.csv, "data/gdp_percap.csv")
+				.defer(d3.json, "data/countries.geo.json")
+				.defer(d3.csv, "data/Hospital_Rank.csv")
+				.await(function(error, file_le, file_pcap, file_p1000, file_gdp, file_geo, file_hrank){ dataLoaded(error, file_le, file_pcap, file_p1000, file_gdp, file_geo, file_hrank);});
+			}
+
+			start_loading();
+		})
+	</script>
+	</body>
+
+</head>
+</html>	
+  
