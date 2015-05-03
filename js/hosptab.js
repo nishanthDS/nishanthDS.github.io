@@ -101,7 +101,7 @@ HospTab.prototype.onSelectionChangeScatter = function(s){
 			this.hoverLock = "F"
 		}
 
-		console.log(this.hdata);
+		//console.log(this.hdata);
 	this.updateVis();
 }
 

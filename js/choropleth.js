@@ -147,30 +147,53 @@ Choropleth.prototype.updateVis = function(){
 
 	    	this.text = this.svg.selectAll(".subunit-label")
     				.data(this.data)
+
+    				this.text
   					.enter().append("text")
-    				.attr("class", "subunit-label")
+  					.attr("class", "subunit-label")
+
+  					this.text.transition()
     				.attr("transform", function(d) { return "translate(" + that.path.centroid(d) + ")"; })
     				.attr("dy", ".35em")
     				.text(function(d) {return d.properties.name; });
 
+  					
 
 
+    				
 }
 
 Choropleth.prototype.updateSelection = function(){
 
 	that = this;
 	if (that.fil_data.length > 0){
+
 	this.path1.classed("geo-unselect", function(p){ 
 		var check = that.fil_data.filter(function(f){
 			return f.properties.name == p.properties.name;
 		})
-
+			
 		if (check.length == 1){return false;}
 		else{return true;}
 	});
+
+	//console.log(this.text);
+		
+		this.text.classed("geo-text-select", function(p){ 
+			//console.log("check");
+		var check2 = that.fil_data.filter(function(f){
+			return f.properties.name == p.properties.name;
+		})
+			
+		if (check2.length == 1){return true;}
+		else{return false;}
+	});
+
+	
+
 }
 	else{
 		this.path1.classed("geo-unselect", false);
+		this.text.classed("geo-text-select", false);
 	}
 }

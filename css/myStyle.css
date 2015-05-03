@@ -72,12 +72,19 @@ table, th, td {
     opacity: .1;
 }
 
+
+
 .subunit-label {
   fill: black;
   
-  font-size: 6px;
+  font-size: 8px;
   font-weight: 300;
-  text-anchor: middle;
+  text-anchor: end;
+  opacity: .1
+}
+.geo-text-select {
+    
+    opacity: 1;
 }
 
 .scatter-text {
