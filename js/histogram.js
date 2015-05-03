@@ -35,7 +35,7 @@ Histogram.prototype.initVis = function(){
       .range([this.height, 0]);
 
     this.x = d3.scale.ordinal()
-      .rangeRoundBands([0, this.width+40], .2);
+      .rangeRoundBands([0, this.width], .2);
 
 	  that = this;
 
@@ -130,6 +130,8 @@ Histogram.prototype.updateVis = function(){
 		//this.color.domain(this.displayData.map(function(d) { return d.name}));
 		//console.log(d3.extent(this.data.map(function(d){return d.properties.gdp[2010];})));
 
+		this.ymin = d3.extent(this.data.map(function(d){return parseFloat(d.properties.gdp);}))[0]
+
 		//console.log(d3.extent(this.data.map(function(d){ return parseInt(d.properties.gdp[2010]);})));
 		
 		//this.max = d3.extent(this.data.map(function(d){return d.properties.gdp[2010];}))[1];
@@ -176,7 +178,7 @@ Histogram.prototype.updateVis = function(){
 			.style("fill", "steelblue")
 			.attr("width", this.x.rangeBand())
 			.attr("height", function(d, i){ 
-					return that.y(0) - that.y(d.properties.gdp) + 5;
+					return that.y(that.ymin) - that.y(d.properties.gdp);
 					});
 		
 		var text_pos = that.y(0) - 10;
