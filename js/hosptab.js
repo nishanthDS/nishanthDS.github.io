@@ -11,7 +11,7 @@ HospTab = function(_parentElement,_geodata, _data, _meta, _eventHandler){
 	    //define all "constants" here
     this.margin = {top: 20, right: 0, bottom: 30, left: 0},
     this.width = 300 - this.margin.left - this.margin.right,
-    this.height = 700 - this.margin.top - this.margin.bottom;
+    this.height = 500 - this.margin.top - this.margin.bottom;
 	
     this.initVis();
 	

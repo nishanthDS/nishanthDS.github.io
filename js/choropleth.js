@@ -5,9 +5,9 @@ Choropleth = function(_parentElement, _data, _eventHandler){
 	this.eventHandler = _eventHandler;
 	this.dp = this.data;
 	//define all constants
-	this.margin = {top:50, right: 0, bottom: 50, left: 0},
+	this.margin = {top:50, right: 0, bottom: 0, left: 0},
 	this.width = 878 - this.margin.left - this.margin.right,
-	this.height = 650 - this.margin.top - this.margin.bottom;
+	this.height = 500 - this.margin.top - this.margin.bottom;
 
 	this.initVis();
 }
@@ -23,7 +23,7 @@ Choropleth.prototype.initVis = function(){
 
 	//Define map projection
 	this.projection = d3.geo.equirectangular()
-								   .translate([this.width/2+20, this.height/2+30])
+								   .translate([this.width/2+20, this.height/2 + 40])
 								   .scale([this.width/6.5]);	
 
 	//Color
