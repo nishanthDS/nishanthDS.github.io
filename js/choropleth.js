@@ -5,9 +5,9 @@ Choropleth = function(_parentElement, _data, _eventHandler){
 	this.eventHandler = _eventHandler;
 	this.dp = this.data;
 	//define all constants
-	this.margin = {top:100, right: 0, bottom: 50, left: 0},
+	this.margin = {top:50, right: 0, bottom: 50, left: 0},
 	this.width = 878 - this.margin.left - this.margin.right,
-	this.height = 450 - this.margin.top - this.margin.bottom;
+	this.height = 650 - this.margin.top - this.margin.bottom;
 
 	this.initVis();
 }
@@ -17,7 +17,7 @@ Choropleth.prototype.initVis = function(){
 
 	this.svg = this.parentElement.select("svg")
 				.attr("width", this.width+this.margin.left+this.margin.right)
-				.attr("height", this.height + this.margin.top + this.margin.bottom)
+				.attr("height", this.height)
 				.append("g")
 				.attr("transform", "translate(" + this.margin.left + "," + this.margin.top + ")");
 
@@ -104,6 +104,38 @@ Choropleth.prototype.updateVis = function(){
 
 	//this.color.domain(d3.extent(this.data.map(function(d){return d.properties.LE[2012]})));
 
+
+		var legend_LE = this.svg.append("text")
+						.text("Life Expectancy")
+						.attr("x", 50)
+						.attr("y", 32)
+
+		var legend=	this.svg.selectAll(".legend")
+				  .data([40, 50, 55, 60, 65, 70, 75, 80])
+
+
+
+				  legend
+				  .enter()
+				  .append("g")
+				  
+
+				  legend.append("rect");
+				  legend.append("text");
+
+				  legend
+				  		.attr("class", "legend")
+				  		.attr("transform", function(d,i){return "translate("+(170+i*70)+","+25+")"; })
+
+				  	legend.select("rect")
+				  	  .style("fill", function(d){return that.color(d);})
+				  	  .attr("width", 40)
+				  	  .attr("height", 8);
+
+				  	legend.select("text")
+				  		  .text(function(d) {return d;})
+				  		  .attr("x", 17)
+				  		  .attr("y", -2)
 	
 	
 

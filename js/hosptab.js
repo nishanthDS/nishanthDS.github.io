@@ -122,8 +122,8 @@ HospTab.prototype.updateVis = function(){
 					  .attr("class", "thead");
 		tbody = table.append("tbody");
 
-		table.append("caption")
-          .html("World Countries Ranking");
+		//table.append("caption")
+         // .html("World Countries Ranking");
 		
 		thead.append("tr").selectAll("th")
 			 .data(head)

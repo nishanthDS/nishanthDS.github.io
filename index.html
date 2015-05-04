@@ -52,7 +52,7 @@
 			<div class="col-md-3"></div>
 			<div class="col-md-6">
 			
-      		<b>Time Slider</b>
+      		<b id="year">YEAR: 1995</b>
       		<input type="range" name="points" min="1995" max="2010" step="1" value="1995" id="slider-time">
     		
     		</div>
@@ -75,8 +75,9 @@
 
 		<div class="row">
 			<div class="col-md-9">
-				<b class="slider1">Top</b>
-				<input type="range" name="points" min="1" max="12000" step="100" value="12000" id="slider-rank" class="slider2">
+				<b id="top_h">Top 12000</b>
+				<p id="h_tab">Where are the top hospitals located?</p>
+				<input type="range" name="points" min="0" max="12000" step="100" value="12000" id="slider-rank" class="slider2">
 				 </br>
 			</div>
 		</div>
@@ -124,6 +125,7 @@
 
 
 
+
 			var initVis = function(){
 
 				//Create a eventHandler
@@ -148,12 +150,16 @@
 			choropleth.onSelectionChange(GeoData);
 			scatter.onSelectionChange(GeoData);
 			histogram.onSelectionChange(GeoData);
+
+			document.getElementById("year").innerHTML = "YEAR: " + rangeInput.value;
 			}, false);
 
 			rankInput.addEventListener("change", function(){
 				
 				RankSet(rankInput.value);
 				hosptab.onSelectionChange(nested_Hrank, "cRank");
+				document.getElementById("top_h").innerHTML = "TOP " + rankInput.value;
+				document.getElementById("h_tab").innerHTML = "Where are the top hospitals located?";
 
 			}, false);
 
@@ -177,6 +183,8 @@
 					CountryHosp(cname);
 
 					hosptab.onSelectionChange(C_hosp_rank, "cHosp");
+
+					document.getElementById("h_tab").innerHTML = "Hospitals in " + cname;
 			});
 
 			$(MyEventHandler).bind("countryRank", function(event, s){
@@ -184,6 +192,7 @@
 
 					RankSet(rankInput.value);
 					hosptab.onSelectionChange(nested_Hrank, "cRank");
+					document.getElementById("h_tab").innerHTML = "Where are the top hospitals located?";
 			});
 
 			postloader();

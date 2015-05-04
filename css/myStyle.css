@@ -80,7 +80,7 @@ table, th, td {
   font-size: 8px;
   font-weight: 300;
   text-anchor: end;
-  opacity: .1
+  opacity: 0;
 }
 .geo-text-select {
     
