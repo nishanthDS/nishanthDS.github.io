@@ -68,6 +68,24 @@ Histogram.prototype.initVis = function(){
       	.style("font-size", 12)
       	.text("GDP Per Capita")
 
+      	 //Brush legend visual elemen
+	 this.brush_legend =	this.svg.append("g");
+	 						
+	 					this.brush_legend
+	 						.append("rect")
+	 						.style("fill", "steelblue")
+	 						.attr("x", 300)
+	 						.attr("y", 0)
+	 						.attr("width", 40)
+	 						.attr("height", 15)
+	 						
+
+	 					this.brush_legend
+	 						.append("text")
+							.text("Brush")
+							.style("fill", "white")
+							.attr("x", 302)
+							.attr("y", 12);
 	  
 	 this.svg.append("g")
         .attr("class", "brush");
