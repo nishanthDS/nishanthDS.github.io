@@ -163,7 +163,7 @@ HospTab.prototype.updateVis = function(){
 		var cells = rows.selectAll("td")
 						.data(function(d){
 							if(that.option == "cHosp")
-							{return [d.rank, d.hospital];}
+							{return [d.rank, d.hospital.replace(/[^a-zA-Z ]/g, "")];}
 							else{return [d.key, d.values];}
 					})
 						.enter()

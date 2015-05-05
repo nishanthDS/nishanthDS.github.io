@@ -78,7 +78,7 @@ Scatter.prototype.initVis = function(){
 		.text("Doctors Per 1000")
 
 
-	 //Brush visual elemen
+	 //Brush legend visual elemen
 	 this.brush_legend =	this.svg.append("g");
 	 						
 	 					this.brush_legend
